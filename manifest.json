@@ -13,3 +13,11 @@
     }
   ]
 }
+let score = 0;
+let rewards = [];
+
+function giveReward(level) {
+  const gift = `🎁 Reward Level ${level}`;
+  rewards.push(gift);
+  alert("Ou resevwa: " + gift);
+}
