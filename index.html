@@ -228,3 +228,12 @@ auth.onAuthStateChanged(user => {
   }
 });
 <link rel="manifest" href="manifest.json">
+  
+let score = 0;
+let rewards = [];
+
+function giveReward(level) {
+  const gift = `🎁 Reward Level ${level}`;
+  rewards.push(gift);
+  alert("Ou resevwa: " + gift);
+}
