@@ -141,3 +141,90 @@ showLeaderboard();
 
 </body>
 </html>
+const questions = [
+  {
+    question: "Kilè Ayiti te pran endepandans?",
+    options: ["1804", "1492", "2000", "1700"],
+    answer: "1804"
+  },
+  {
+    question: "Ki kapital Ayiti?",
+    options: ["Okap", "Jakmèl", "Pòtoprens", "Jeremi"],
+    answer: "Pòtoprens"
+  }
+];
+function checkAnswer(selected) {
+  if (selected === questions[current].answer) {
+    document.body.style.background = "green";
+    score++;
+  } else {
+    document.body.style.background = "red";
+  }
+
+  setTimeout(() => {
+    document.body.style.background = "#0a1f44";
+    nextQuestion();
+  }, 500);
+}
+const lang = {
+  ht: {
+    start: "Kòmanse",
+    question: "Kesyon"
+  },
+  fr: {
+    start: "Commencer",
+    question: "Question"
+  },
+  en: {
+    start: "Start",
+    question: "Question"
+  }
+};
+
+let currentLang = "ht";
+
+function changeLang(l) {
+  currentLang = l;
+}
+<button onclick="changeLang('ht')">🇭🇹</button>
+<button onclick="changeLang('fr')">🇫🇷</button>
+<button onclick="changeLang('en')">🇺🇸</button>
+function saveScore(name, score) {
+  db.collection("scores").add({
+    name: name,
+    score: score
+  });
+}
+function loadLeaderboard() {
+  db.collection("scores")
+    .orderBy("score", "desc")
+    .limit(10)
+    .get()
+    .then(snapshot => {
+      let html = "";
+      snapshot.forEach(doc => {
+        let data = doc.data();
+        html += `<p>${data.name} - ${data.score}</p>`;
+      });
+      document.getElementById("leaderboard").innerHTML = html;
+    });
+}
+<div id="settings" style="display:none;">
+  <h2>Paramètres</h2>
+  <p>Game sa kreye pa Iverson</p>
+  <p>Ou ka jwe pou teste konesans ou sou Ayiti 🇭🇹</p>
+</div>
+
+<button onclick="toggleSettings()">⚙️</button>
+function toggleSettings() {
+  let s = document.getElementById("settings");
+  s.style.display = s.style.display === "none" ? "block" : "none";
+}
+auth.onAuthStateChanged(user => {
+  if (user) {
+    db.collection("online").doc(user.uid).set({
+      name: user.displayName
+    });
+  }
+});
+<link rel="manifest" href="manifest.json">
