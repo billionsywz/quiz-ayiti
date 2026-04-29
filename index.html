@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quiz Ayiti 🇭🇹</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #0a1f44;
+      color: white;
+    }
+    button {
+      padding: 10px;
+      margin: 5px;
+      border: none;
+      background: red;
+      color: white;
+    }
+    input {
+      padding: 10px;
+      margin: 5px;
+    }
+    #leaderboard {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="login">
+  <h1>🇭🇹 Quiz Ayiti 🇭🇹</h1>
+  <p>By Mr Iverson</p>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Flag_of_Haiti.svg" width="120">
+
+  <h3>Konekte</h3>
+  <input id="name" placeholder="Non ou"><br>
+  <button onclick="startGame()">Kòmanse</button>
+
+  <p>📞 Assistance: 50944011437</p>
+</div>
+
+<div id="game" style="display:none;">
+  <h2 id="level"></h2>
+  <h3 id="question"></h3>
+  <div id="answers"></div>
+  <p id="score"></p>
+</div>
+
+<div id="leaderboard">
+  <h2>🏆 Classement</h2>
+  <ul id="board"></ul>
+</div>
+
+<script>
+let player = "";
+let level = 1;
+let questionIndex = 0;
+let score = 0;
+
+const questions = [
+  {q:"Kapital Ayiti?",a:["Cap","Port-au-Prince"],correct:1},
+  {q:"Endepandans?",a:["1804","1820"],correct:0},
+  {q:"Ewo?",a:["Dessalines","Napoleon"],correct:0},
+  {q:"Lang?",a:["Kreyòl","Espagnol"],correct:0},
+  {q:"Drapo?",a:["Ble & Wouj","Vèt"],correct:0},
+  {q:"Vil Cap?",a:["Nò","Sid"],correct:0},
+  {q:"Lajan?",a:["Goud","Dollar"],correct:0},
+  {q:"Mizik?",a:["Konpa","Rock"],correct:0},
+  {q:"1 Janvye?",a:["Endepandans","Noel"],correct:0},
+  {q:"Manje?",a:["Soup Joumou","Burger"],correct:0}
+];
+
+function startGame() {
+  player = document.getElementById("name").value;
+  if(!player) return alert("Mete non ou!");
+
+  document.getElementById("login").style.display="none";
+  document.getElementById("game").style.display="block";
+
+  showQuestion();
+}
+
+function showQuestion() {
+  if(questionIndex >= questions.length) {
+    level++;
+    questionIndex = 0;
+
+    if(level > 10) {
+      saveScore();
+      showLeaderboard();
+      document.getElementById("game").innerHTML =
+        "<h1>🎉 Fini!</h1><p>Pwen: "+score+"</p>";
+      return;
+    }
+  }
+
+  let q = questions[questionIndex];
+  document.getElementById("level").innerHTML="Level "+level;
+  document.getElementById("question").innerHTML=q.q;
+
+  let html="";
+  q.a.forEach((ans,i)=>{
+    html+=`<button onclick="checkAnswer(${i})">${ans}</button>`;
+  });
+
+  document.getElementById("answers").innerHTML=html;
+  document.getElementById("score").innerHTML="Pwen: "+score;
+}
+
+function checkAnswer(i) {
+  if(i === questions[questionIndex].correct){
+    score+=10;
+  }
+  questionIndex++;
+  showQuestion();
+}
+
+// SAVE SCORE
+function saveScore() {
+  let scores = JSON.parse(localStorage.getItem("scores")) || [];
+  scores.push({name: player, score: score});
+  scores.sort((a,b)=>b.score-a.score);
+  localStorage.setItem("scores", JSON.stringify(scores));
+}
+
+// SHOW LEADERBOARD
+function showLeaderboard() {
+  let scores = JSON.parse(localStorage.getItem("scores")) || [];
+  let board = document.getElementById("board");
+  board.innerHTML="";
+
+  scores.slice(0,10).forEach(s=>{
+    board.innerHTML += `<li>${s.name} - ${s.score} pts</li>`;
+  });
+}
+
+// LOAD leaderboard otomatik
+showLeaderboard();
+</script>
+
+</body>
+</html>
